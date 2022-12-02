@@ -42,7 +42,7 @@ class Perceptron:
             activity += input_vector[i] * self.weights[i]
 
         # check if the bias is being added
-        if self.bias is None:
+        if self.bias is not None:
             # adds bias value to all activity terms
             activity += self.bias
 
