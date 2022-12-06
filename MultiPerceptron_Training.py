@@ -20,12 +20,12 @@ def FFBP(H_list, O_list, input_vector, iterations, eta, bias_update,
         for j in range(0,(len(H_list))):
             H_list[j].calc_activity(input_vector, bias_update)
             H_list[j].calc_activation(input_vector, bias_update)
-            y[j] = H_list[j].get_activation()
+            y[j] = H_list[j].activation
             
         for k in range(0,(len(O_list))):
             O_list[k].calc_activity(y, bias_update)
             O_list[k].calc_activation(y, bias_update)
-            z[k] = O_list[k].get_activation()
+            z[k] = O_list[k].activation
             print(z)
             
             # BACK PROPAGATION
@@ -33,7 +33,7 @@ def FFBP(H_list, O_list, input_vector, iterations, eta, bias_update,
             delta_k[k] = (d - z[k]) * z[k] * (1 - z[k])
             
             # sets the delta value 
-            O_list[k].set_delta(delta_k[k])
+            O_list[k].delta = delta_k[k]
             
         for l in range(0,(len(H_list))):
             # calculates the delta value for the hidden layer before updating output weights
@@ -45,7 +45,7 @@ def FFBP(H_list, O_list, input_vector, iterations, eta, bias_update,
             O_list[k].update_bias(eta)
             
         for n in range(0,(len(H_list))):
-            H_list[n].set_delta(delta_j[n])
+            H_list[n].delta = delta_j[n]
             H_list[n].set_delta_weights(input_vector, eta)
             H_list[n].update_weights()
             H_list[n].update_bias(eta)
