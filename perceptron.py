@@ -5,6 +5,9 @@ Created on Fri Sep 30 16:05:24 2022
 @author: Ted
 """
 
+# TODO: (M.Kouremetis) I think we should numpy matrix operations versus iterating over lists
+
+
 import numpy as np
 
 
