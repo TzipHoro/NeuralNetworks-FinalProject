@@ -13,7 +13,7 @@ np.set_printoptions(precision=4, suppress=True)
 
 
 def FFBP(H_list, O_list, input_vector, iterations, eta, bias_update,
-    delta_j, delta_k, O_0, y, z):
+    delta_j, delta_k, O_0, y, z, d):
     """Function to run the feedforward back propagation training method"""
     for i in range(0,iterations):
         # FEEDFORWARD
@@ -102,7 +102,7 @@ def main():
     input_vector = [1, 1] # input values
         
     FFBP(H_list, O_list, input_vector, iterations, eta, bias_update,
-     delta_j, delta_k, O_0, y, z)
+     delta_j, delta_k, O_0, y, z, d)
 
     # prints total error for the training session
     E = ((0.5)*(d - z[0])**2)
