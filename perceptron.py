@@ -12,7 +12,7 @@ import numpy as np
 
 
 class Perceptron:
-    def __init__(self, initial_weights: list , bias: float):
+    def __init__(self, initial_weights: list, bias: float):
         self.weights = initial_weights 
         self.bias = bias 
         self._delta = 0 

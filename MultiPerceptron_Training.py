@@ -27,11 +27,11 @@ def FFBP(H_list, O_list, input_vector, iterations, eta, bias_update,
             O_list[k].calc_activation(y, bias_update)
             z[k] = O_list[k].activation
             print(z)
-            
+
             # BACK PROPAGATION
             # calculates the delta value for the output layer
             delta_k[k] = (d - z[k]) * z[k] * (1 - z[k])
-            
+
             # sets the delta value 
             O_list[k].delta = delta_k[k]
             
@@ -110,3 +110,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
