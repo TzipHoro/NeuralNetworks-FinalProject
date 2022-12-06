@@ -19,15 +19,15 @@ weights = [0.3, 0.3, 0.3, 0.3, 0.8, 0.8]  # initial weights
 iterations = 1  # number of training sessions
 
 # hidden layer perceptron initialization
-H_0 = Perceptron([weights[0], weights[1]], 0)
-H_1 = Perceptron([weights[2], weights[3]], 0)
+H_0 = Perceptron(weights[:2], 0)
+H_1 = Perceptron(weights[2:4], 0)
 
 H_list = [H_0, H_1]  # hidden layer list
 y = [0] * len(H_list)  # preallocates space for stored variables
 delta_j = [0] * len(H_list)  # preallocates space for delta_j values
 
 # output lay perceptron initialization
-O_0 = Perceptron([weights[4], weights[5]], 0)
+O_0 = Perceptron(weights[4:], 0)
 
 O_list = [O_0]  # output layer list
 z = [0] * len(O_list)  # preallocates space for stored variables
