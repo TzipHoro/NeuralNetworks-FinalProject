@@ -30,13 +30,13 @@ def perceptron():
 
 
 def test_calc_activity(inputs, perceptron):
-    perceptron.calc_activity(inputs, bias=perceptron.bias)
+    perceptron.calc_activity(inputs)
 
     assert perceptron.activity == 0.984
 
 
 def test_calc_activation(inputs, perceptron):
-    perceptron.calc_activation(inputs, bias=perceptron.bias)
+    perceptron.calc_activation(inputs)
     assert perceptron.activation == 0.7279011823597308
 
 
@@ -66,7 +66,7 @@ def test_update_bias(eta, perceptron):
 
 def test_perceptron(perceptron, inputs, desired_output, eta):
     for i in range(75):
-        perceptron.calc_activation(inputs, perceptron.bias)
+        perceptron.calc_activation(inputs)
         delta = perceptron.activation * (1 - perceptron.activation) * (desired_output - perceptron.activation)
         perceptron.delta = delta
         perceptron.set_delta_weights(inputs, eta)

@@ -12,7 +12,7 @@ import numpy as np
 
 
 class Perceptron:
-    def __init__(self, initial_weights: list, bias: float):
+    def __init__(self, initial_weights: list, bias: float = None):
         self.weights = initial_weights 
         self.bias = bias 
         self._delta = 0 
@@ -38,19 +38,18 @@ class Perceptron:
     def delta(self, value):
         self._delta = value
         
-    def calc_activity(self, input_vector: list, bias: bool):
-        """ """
-        input = input_vector
-        A = 0
+    def calc_activity(self, input_vector: list):
+        activity = 0
+        # for loop to calculate activity based on input/weight pairs
         for i in range(0, self.vector_length):
-            A += input[i] * self.weights[i]
-        if bias == 1:    
-            A += self.bias
-        self.activity = A
+            activity += input_vector[i] * self.weights[i]
+        if self.bias is not None:
+            activity += self.bias
+        self.activity = activity
         
-    def calc_activation(self, input_vector: list, bias: bool):
+    def calc_activation(self, input_vector: list):
         """ """
-        self.calc_activity(input_vector, bias)
+        self.calc_activity(input_vector)
         self._activation = 1.0/(1.0 + np.exp(-1*self.activity))
     
     
