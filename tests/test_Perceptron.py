@@ -3,7 +3,7 @@
 """
 import pytest
 
-from Perceptron import Perceptron
+from perceptron import Perceptron
 
 
 @pytest.fixture
@@ -37,15 +37,13 @@ def test_calc_activity(inputs, perceptron):
 
 def test_calc_activation(inputs, perceptron):
     perceptron.calc_activation(inputs)
-    act = perceptron.get_activation()
-
-    assert act == 0.7279011823597308
+    assert perceptron.activation == 0.7279011823597308
 
 
 def test_set_delta_weights(inputs, desired_output, eta, perceptron):
     act = 0.7279011823597308
     delta = act * (1 - act) * (desired_output - act)
-    perceptron.set_delta(delta)
+    perceptron.delta = delta
     perceptron.set_delta_weights(inputs, eta)
     print(perceptron.delta_weights)
 
@@ -70,7 +68,7 @@ def test_perceptron(perceptron, inputs, desired_output, eta):
     for i in range(75):
         perceptron.calc_activation(inputs)
         delta = perceptron.activation * (1 - perceptron.activation) * (desired_output - perceptron.activation)
-        perceptron.set_delta(delta)
+        perceptron.delta = delta
         perceptron.set_delta_weights(inputs, eta)
         perceptron.update_weights()
         perceptron.update_bias(eta)
