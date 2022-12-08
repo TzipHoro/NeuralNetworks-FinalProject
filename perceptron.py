@@ -67,4 +67,5 @@ class Perceptron:
             
     def update_bias(self, eta: float):
         """ """
-        self.bias += eta * self.delta * 1
+        if self.bias is not None:
+            self.bias += eta * self.delta * 1

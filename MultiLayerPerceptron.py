@@ -4,7 +4,7 @@
 import pandas as pd
 import warnings
 
-from Perceptron import Perceptron
+from perceptron import Perceptron
 
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -13,7 +13,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 class MLP:
     """A multi-layer Perceptron object with n hidden layers and 1 output layer"""
 
-    def __init__(self, n_hidden: int, weights: list[list], biases: list):
+    def __init__(self, n_hidden: int, weights: list, biases: list):
         hidden_layers = [None] * n_hidden
         for i in range(n_hidden):
             hidden_layers[i] = Perceptron(weights[i], biases[i])
@@ -31,13 +31,13 @@ class MLP:
 
         for i in range(self.n_hidden):
             self.hidden_layers[i].calc_activation(inputs)
-            h_output[i] = self.hidden_layers[i].get_activation()
+            h_output[i] = self.hidden_layers[i].activation
 
         for i in range(self.n_output):
             self.output_layers[i].calc_activation(h_output)
-            o = self.output_layers[i].get_activation()
+            o = self.output_layers[i].activation
             self.delta_o[i] = (desired_output - o) * o * (1 - o)
-            self.output_layers[i].set_delta(self.delta_o[i])
+            self.output_layers[i].delta = self.delta_o[i]
 
         return h_output
 
@@ -51,7 +51,7 @@ class MLP:
             self.output_layers[i].update_bias(eta)
 
         for i in range(self.n_hidden):
-            self.hidden_layers[i].set_delta(self.delta_h[i])
+            self.hidden_layers[i].delta = self.delta_h[i]
             self.hidden_layers[i].set_delta_weights(inputs, eta)
             self.hidden_layers[i].update_weights()
             self.hidden_layers[i].update_bias(eta)
