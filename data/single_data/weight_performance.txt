@@ -1,0 +1,2 @@
+1: all training weights were fairly close 0.021, 0.028, 0.027 respectively
+2: similar to 1, but this time the second training set was barely better than the original 0.0217, 0.0216, 0.0244 respectively
