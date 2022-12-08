@@ -8,8 +8,29 @@ Created on Thu Dec  1 19:51:12 2022
 from  perceptron import Perceptron
 import numpy as np
 
-
 np.set_printoptions(precision=4, suppress=True)
+
+# variable initialization
+d = 0.7  # desired output
+eta = 1.0  # gradient stepsize
+input_vector = [1, 2]  # input values
+weights = [0.3, 0.3, 0.3, 0.3, 0.8, 0.8]  # initial weights
+iterations = 1  # number of training sessions
+
+# hidden layer perceptron initialization
+H_0 = Perceptron(weights[:2], 0)
+H_1 = Perceptron(weights[2:4], 0)
+
+H_list = [H_0, H_1]  # hidden layer list
+y = [0] * len(H_list)  # preallocates space for stored variables
+delta_j = [0] * len(H_list)  # preallocates space for delta_j values
+
+# output lay perceptron initialization
+O_0 = Perceptron(weights[4:], 0)
+
+O_list = [O_0]  # output layer list
+z = [0] * len(O_list)  # preallocates space for stored variables
+delta_k = [0] * len(O_list)  # preallocates space for delta_k values
 
 
 def FFBP(H_list, O_list, input_vector, iterations, eta, bias_update,
