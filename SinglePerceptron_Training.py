@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Dec  1 19:51:12 2022
+Created on Wed Dec  7 20:07:42 2022
 
 @author: Ted
 """
@@ -22,85 +22,43 @@ testing_data = data[1::2] # data selected for testing
 d = 0 # desired output
 eta = 0.1 # gradient stepsize
 input_vector = [0,0] # input values
-weights = [0.3, 0.3, 0.3, 0.3, 0.8, 0.8] # initial weights
+weights = [0.8, 0.8] # initial weights
 iterations = 1 # number of training sessions
 
-# hidden layer perceptron initialization
-H_0 = Perceptron(weights[:2], 0)
-H_1 = Perceptron(weights[2:4], 0)
-
-H_list = [H_0, H_1] # hidden layer list
-y = [0] * len(H_list) # preallocates space for stored variables
-delta_j = [0] * len(H_list) # preallocates space for delta_j values
-
-# output lay perceptron initialization
-O_0 = Perceptron([weights[4],weights[5]], 0)
-
-O_list = [O_0] # output layer list
-z = [0] * len(O_list) # preallocates space for stored variables
-delta_k = [0] * len(O_list) # preallocates space for delta_k values
+# single perceptron initialization
+P_0 = Perceptron(weights, 0)
+y = [0] # variable to hold output
 
 # defines the function to run the feedforward back propagation training method
-def FFBP(H_list, O_list, input_vector, iterations, eta):
-    # feedforward back propagation perceptron training session
+def SP(P_0, input_vector, iterations, eta, y):
+    # perceptron training session
     for i in range(0,iterations):
-        # FEEDFORWARD
-        for j in range(0,(len(H_list))):
-            # calculates activity value
-            H_list[j].calc_activity(input_vector)
+        # calculates activity value
+        P_0.calc_activity(input_vector)
         
-            # calculates activation value
-            H_list[j].calc_activation(input_vector)
-            
-            # sets the activation value
-            y[j] = H_list[j].activation
-            
-        for k in range(0,(len(O_list))):
-            # calculates activity value
-            O_list[k].calc_activity(y)
+        # calculates activation value
+        P_0.calc_activation(input_vector)
         
-            # calculates activation value
-            O_list[k].calc_activation(y)
-            
-            # sets the activation value
-            z[k] = O_list[k].activation
-            
-            # prints the current iterate training session
-            print(z)
-            
-            # BACK PROPAGATION
-            # calculates the delta value for the output layer
-            delta_k[k] = (d - z[k]) * z[k] * (1 - z[k])
-            
-            # sets the delta value 
-            O_list[k].delta = delta_k[k]
-            
-        for l in range(0,(len(H_list))):
-        # calculates the delta value for the hidden layer before updating output weights
-            delta_j[l] = (1 - y[l]) * y[l] * (sum(delta_k) * O_0.weights[l])
-            
-        for m in range(0,(len(O_list))):
-            # calculates the change in the weights
-            O_list[k].set_delta_weights(y, eta)
-            
-            # updates the weights
-            O_list[k].update_weights()
-            
-            # update bias
-            O_list[k].update_bias(eta)
-            
-        for n in range(0,(len(H_list))):
-            # sets the delta value 
-            H_list[n].delta = delta_j[n]
-            
-            # calculates the change in the weights
-            H_list[n].set_delta_weights(input_vector, eta)
-            
-            # updates the weights
-            H_list[n].update_weights()
-            
-            # update bias
-            H_list[n].update_bias(eta)
+        # sets the activation value
+        y[0] = P_0.activation
+        
+        # calculates the delta value
+        delta = (d-y[0])*y[0]*(1-y[0])
+        
+        # sets the delta value
+        P_0.delta = delta
+        
+        # calculates the change in the weights
+        P_0.set_delta_weights(input_vector, eta)
+        
+        # updates the weights
+        P_0.update_weights()
+        
+        # update bias
+        P_0.update_bias(eta)
+        
+        # prints the current iterate training session
+        print(y[0])
 
 # FIRST TRAINING SESSION
 # start time
@@ -116,21 +74,21 @@ for i in range(0,10):
     input_vector = [hold[1],hold[2]] # input values
     
     # trains the perceptron based off inputed values
-    FFBP(H_list, O_list, input_vector, iterations, eta)
+    SP(P_0, input_vector, iterations, eta, y)
     
 # end time
 t1 = time.time() - t0 # total time for training session
 
-training_weights_1 = H_list[0].weights + H_list[1].weights + O_list[0].weights
+training_weights_1 = weights
 
 # testing cycle    
 d = data.TACA[0] # desired output
 input_vector = [data.LAC[0],data.SOW[0]] # input values
     
-FFBP(H_list, O_list, input_vector, iterations, eta)
+SP(P_0, input_vector, iterations, eta, y)
 
 # prints total error for the training session
-E = ((0.5)*(d - z[0])**2)
+E = ((0.5)*(d - y[0])**2)
 
 print("The time elapsed for training is", t1)
 print("The final weights for this training are", training_weights_1)
@@ -147,15 +105,13 @@ for i in range(0,10):
     input_vector = [hold[1],hold[2]] # input values
     
     # loads training weights
-    H_list[0].weights = [training_weights_1[0],training_weights_1[1]]
-    H_list[1].weights = [training_weights_1[2],training_weights_1[3]]
-    O_list[0].weights = [training_weights_1[4],training_weights_1[5]]
+    P_0.weights = [training_weights_1[0],training_weights_1[1]]
     
     # tests the perceptron based off inputed values
-    FFBP(H_list, O_list, input_vector, iterations, eta)
+    SP(P_0, input_vector, iterations, eta, y)
     
     # appends the activation value to a list
-    activation_1.append(z[0])
+    activation_1.append(y[0])
 
 # SECOND TRAINING SESSION
 # variable initialization
@@ -164,29 +120,14 @@ input_vector = [0,0] # input values
 
 # random weight generation
 weights = [] # initial weights
-for i in range(6):
+for i in range(2):
     # generates a random variable 
     hold = random.random()
     # appends it to the list of weights
     weights.append(hold)
-    
-iterations = 1 # number of training sessions
-bias_update = 1 # boolean value that specifies if bias added in activity calculation
 
-# hidden layer perceptron initialization
-H_0 = Perceptron([weights[0],weights[1]], 0)
-H_1 = Perceptron([weights[2],weights[3]], 0)
-
-H_list = [H_0, H_1] # hidden layer list
-y = [0] * len(H_list) # preallocates space for stored variables
-delta_j = [0] * len(H_list) # preallocates space for delta_j values
-
-# output lay perceptron initialization
-O_0 = Perceptron([weights[4],weights[5]], 0)
-
-O_list = [O_0] # output layer list
-z = [0] * len(O_list) # preallocates space for stored variables
-delta_k = [0] * len(O_list) # preallocates space for delta_k values
+# single perceptron initialization
+P_0 = Perceptron(weights, 0)
 
 # start time
 t0 = time.time()
@@ -201,21 +142,21 @@ for i in range(0,10):
     input_vector = [hold[1],hold[2]] #input values
     
     # trains the perceptron based off inputed values
-    FFBP(H_list, O_list, input_vector, iterations, eta)
+    SP(P_0, input_vector, iterations, eta, y)
     
 # end time
 t1 = time.time() - t0 # total time for training session
 
-training_weights_2 = H_list[0].weights + H_list[1].weights + O_list[0].weights
+training_weights_2 = weights
 
 # testing cycle    
 d = data.TACA[0] # desired output
 input_vector = [data.LAC[0],data.SOW[0]] # input values
     
-FFBP(H_list, O_list, input_vector, iterations, eta)
+SP(P_0, input_vector, iterations, eta, y)
 
 # prints total error for the training session
-E = ((0.5)*(d - z[0])**2)
+E = ((0.5)*(d - y[0])**2)
 
 print("The time elapsed for training is", t1)
 print("The final weights for this training are", training_weights_2)
@@ -232,15 +173,13 @@ for i in range(0,10):
     input_vector = [hold[1],hold[2]] # input values
     
     # loads training weights
-    H_list[0].weights = [training_weights_2[0],training_weights_2[1]]
-    H_list[1].weights = [training_weights_2[2],training_weights_2[3]]
-    O_list[0].weights = [training_weights_2[4],training_weights_2[5]]
+    P_0.weights = [training_weights_2[0],training_weights_2[1]]
     
     # tests the perceptron based off inputed values
-    FFBP(H_list, O_list, input_vector, iterations, eta)
+    SP(P_0, input_vector, iterations, eta, y)
     
     # appends the activation value to a list
-    activation_2.append(z[0])
+    activation_2.append(y[0])
 
 # THIRD TRAINING SESSION
 # variable initialization
@@ -249,7 +188,7 @@ input_vector = [0,0] # input values
 
 # random weight generation
 weights = [] # initial weights
-for i in range(6):
+for i in range(2):
     # generates a random variable 
     hold = random.random()
     
@@ -258,24 +197,9 @@ for i in range(6):
     
     # appends it to the list of weights
     weights.append(combined_hold)
-    
-iterations = 1 # number of training sessions
-bias_update = 1 # boolean value that specifies if bias added in activity calculation
 
-# hidden layer perceptron initialization
-H_0 = Perceptron([weights[0],weights[1]], 0)
-H_1 = Perceptron([weights[2],weights[3]], 0)
-
-H_list = [H_0, H_1] # hidden layer list
-y = [0] * len(H_list) # preallocates space for stored variables
-delta_j = [0] * len(H_list) # preallocates space for delta_j values
-
-# output lay perceptron initialization
-O_0 = Perceptron([weights[4],weights[5]], 0)
-
-O_list = [O_0] # output layer list
-z = [0] * len(O_list) # preallocates space for stored variables
-delta_k = [0] * len(O_list) # preallocates space for delta_k values
+# single perceptron initialization
+P_0 = Perceptron(weights, 0)
 
 # start time
 t0 = time.time()
@@ -290,21 +214,21 @@ for i in range(0,10):
     input_vector = [hold[1],hold[2]] #input values
     
     # trains the perceptron based off inputed values
-    FFBP(H_list, O_list, input_vector, iterations, eta)
+    SP(P_0, input_vector, iterations, eta, y)
     
 # end time
 t1 = time.time() - t0 # total time for training session
 
-training_weights_3 = H_list[0].weights + H_list[1].weights + O_list[0].weights
+training_weights_3 = weights
 
 # testing cycle    
 d = data.TACA[0] # desired output
 input_vector = [data.LAC[0],data.SOW[0]] # input values
     
-FFBP(H_list, O_list, input_vector, iterations, eta)
+SP(P_0, input_vector, iterations, eta, y)
 
 # prints total error for the training session
-E = ((0.5)*(d - z[0])**2)
+E = ((0.5)*(d - y[0])**2)
 
 print("The time elapsed for training is", t1)
 print("The final weights for this training are", training_weights_3)
@@ -321,15 +245,13 @@ for i in range(0,10):
     input_vector = [hold[1],hold[2]] # input values
     
     # loads training weights
-    H_list[0].weights = [training_weights_3[0],training_weights_3[1]]
-    H_list[1].weights = [training_weights_3[2],training_weights_3[3]]
-    O_list[0].weights = [training_weights_3[4],training_weights_3[5]]
+    P_0.weights = [training_weights_3[0],training_weights_3[1]]
     
     # tests the perceptron based off inputed values
-    FFBP(H_list, O_list, input_vector, iterations, eta)
+    SP(P_0, input_vector, iterations, eta, y)
     
     # appends the activation value to a list
-    activation_3.append(z[0])
+    activation_3.append(y[0])
 
 # TRAINING WEIGHTS AND ACTIVATION EXPORT
 # zips the training and testing files together before DataFrame creation
