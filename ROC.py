@@ -154,12 +154,12 @@ def main(output_data_path: str, plot_path: str = None):
 
 if __name__ == '__main__':
     # multi-layer perceptron
-    # p_th_1 = main(r'data/multilayer_data/testing_activation_1.csv', r'plots/roc-mlp-1.png')
+    p_th_1 = main(r'data/multilayer_data/testing_activation_1.csv', r'plots/roc-mlp-1.png')
     p_th_2 = main(r'data/multilayer_data/testing_activation_2.csv', r'plots/roc-mlp-2.png')
-    # p_th_3 = main(r'data/multilayer_data/testing_activation_3.csv', r'plots/roc-mlp-3.png')
-    # print('threshold 1:', p_th_1, '\nthreshold 2:', p_th_2, '\nthreshold 3:', p_th_3)
+    p_th_3 = main(r'data/multilayer_data/testing_activation_3.csv', r'plots/roc-mlp-3.png')
+    print('threshold 1:', p_th_1, '\nthreshold 2:', p_th_2, '\nthreshold 3:', p_th_3)
 
     # single-layer perceptron
-    # p_th_1 = main(r'data/single_data/testing_activation_1.csv', r'plots/roc-slp-1.png')
+    p_th_1 = main(r'data/single_data/testing_activation_1.csv', r'plots/roc-slp-1.png')
     p_th_2 = main(r'data/single_data/testing_activation_2.csv', r'plots/roc-slp-2.png')
-    # print('\nthreshold 1:', p_th_1, '\nthreshold 2:', p_th_2)
+    print('\nthreshold 1:', p_th_1, '\nthreshold 2:', p_th_2)
