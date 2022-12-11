@@ -6,7 +6,7 @@ Created on Wed Dec  7 20:07:42 2022
 """
 
 # Library imports
-from perceptron import Perceptron
+import PerceptronClass as per
 import pandas as pd
 import numpy as np
 import time
@@ -24,29 +24,30 @@ eta = 0.1 # gradient stepsize
 input_vector = [0,0] # input values
 weights = [0.8, 0.8] # initial weights
 iterations = 1 # number of training sessions
+bias_update = 1 # boolean value that specifies if bias added in activity calculation
 
 # single perceptron initialization
-P_0 = Perceptron(weights, 0)
+P_0 = per.perceptron(weights, 0)
 y = [0] # variable to hold output
 
 # defines the function to run the feedforward back propagation training method
-def SP(P_0, input_vector, iterations, eta, y):
+def SP(P_0, input_vector, iterations, eta, bias_update, y):
     # perceptron training session
     for i in range(0,iterations):
         # calculates activity value
-        P_0.calc_activity(input_vector)
+        P_0.calc_activity(input_vector, 1)
         
         # calculates activation value
-        P_0.calc_activation(input_vector)
+        P_0.calc_activation(input_vector, 1)
         
         # sets the activation value
-        y[0] = P_0.activation
+        y[0] = P_0.get_activation()
         
         # calculates the delta value
         delta = (d-y[0])*y[0]*(1-y[0])
         
         # sets the delta value
-        P_0.delta = delta
+        P_0.set_delta(delta)
         
         # calculates the change in the weights
         P_0.set_delta_weights(input_vector, eta)
@@ -64,6 +65,7 @@ def SP(P_0, input_vector, iterations, eta, y):
 # start time
 t0 = time.time()
 
+E = [] # initial error
 # Online Training
 for i in range(0,10):
     # training data row holding variable 
@@ -74,7 +76,10 @@ for i in range(0,10):
     input_vector = [hold[1],hold[2]] # input values
     
     # trains the perceptron based off inputed values
-    SP(P_0, input_vector, iterations, eta, y)
+    SP(P_0, input_vector, iterations, eta, bias_update, y)
+    
+    # stores error values
+    E.append(((0.5)*(d - y[0])**2))
     
 # end time
 t1 = time.time() - t0 # total time for training session
@@ -85,14 +90,11 @@ training_weights_1 = weights
 d = data.TACA[0] # desired output
 input_vector = [data.LAC[0],data.SOW[0]] # input values
     
-SP(P_0, input_vector, iterations, eta, y)
-
-# prints total error for the training session
-E = ((0.5)*(d - y[0])**2)
+SP(P_0, input_vector, iterations, eta, bias_update, y)
 
 print("The time elapsed for training is", t1)
 print("The final weights for this training are", training_weights_1)
-print("The big E error for this training was", E)
+print("The big E error for this training was", sum(E))
 
 # activation value calculation
 activation_1 = [] # activation values for tested values
@@ -108,7 +110,7 @@ for i in range(0,10):
     P_0.weights = [training_weights_1[0],training_weights_1[1]]
     
     # tests the perceptron based off inputed values
-    SP(P_0, input_vector, iterations, eta, y)
+    SP(P_0, input_vector, iterations, eta, bias_update, y)
     
     # appends the activation value to a list
     activation_1.append(y[0])
@@ -127,11 +129,12 @@ for i in range(2):
     weights.append(hold)
 
 # single perceptron initialization
-P_0 = Perceptron(weights, 0)
+P_0 = per.perceptron(weights, 0)
 
 # start time
 t0 = time.time()
 
+E = [] # initial error
 # Online Training
 for i in range(0,10):
     # training data row holding variable 
@@ -142,7 +145,10 @@ for i in range(0,10):
     input_vector = [hold[1],hold[2]] #input values
     
     # trains the perceptron based off inputed values
-    SP(P_0, input_vector, iterations, eta, y)
+    SP(P_0, input_vector, iterations, eta, bias_update, y)
+    
+    # stores error values
+    E.append(((0.5)*(d - y[0])**2))
     
 # end time
 t1 = time.time() - t0 # total time for training session
@@ -153,14 +159,11 @@ training_weights_2 = weights
 d = data.TACA[0] # desired output
 input_vector = [data.LAC[0],data.SOW[0]] # input values
     
-SP(P_0, input_vector, iterations, eta, y)
-
-# prints total error for the training session
-E = ((0.5)*(d - y[0])**2)
+SP(P_0, input_vector, iterations, eta, bias_update, y)
 
 print("The time elapsed for training is", t1)
 print("The final weights for this training are", training_weights_2)
-print("The big E error for this training was", E)
+print("The big E error for this training was", sum(E))
 
 # activation value calculation
 activation_2 = [] # activation values for tested values
@@ -176,7 +179,7 @@ for i in range(0,10):
     P_0.weights = [training_weights_2[0],training_weights_2[1]]
     
     # tests the perceptron based off inputed values
-    SP(P_0, input_vector, iterations, eta, y)
+    SP(P_0, input_vector, iterations, eta, bias_update, y)
     
     # appends the activation value to a list
     activation_2.append(y[0])
@@ -199,11 +202,12 @@ for i in range(2):
     weights.append(combined_hold)
 
 # single perceptron initialization
-P_0 = Perceptron(weights, 0)
+P_0 = per.perceptron(weights, 0)
 
 # start time
 t0 = time.time()
 
+E = [] # initial error
 # Online Training
 for i in range(0,10):
     # training data row holding variable 
@@ -214,7 +218,10 @@ for i in range(0,10):
     input_vector = [hold[1],hold[2]] #input values
     
     # trains the perceptron based off inputed values
-    SP(P_0, input_vector, iterations, eta, y)
+    SP(P_0, input_vector, iterations, eta, bias_update, y)
+    
+    # stores error values
+    E.append(((0.5)*(d - y[0])**2))
     
 # end time
 t1 = time.time() - t0 # total time for training session
@@ -225,14 +232,11 @@ training_weights_3 = weights
 d = data.TACA[0] # desired output
 input_vector = [data.LAC[0],data.SOW[0]] # input values
     
-SP(P_0, input_vector, iterations, eta, y)
-
-# prints total error for the training session
-E = ((0.5)*(d - y[0])**2)
+SP(P_0, input_vector, iterations, eta, bias_update, y)
 
 print("The time elapsed for training is", t1)
 print("The final weights for this training are", training_weights_3)
-print("The big E error for this training was", E)
+print("The big E error for this training was", sum(E))
 
 # activation value calculation
 activation_3 = [] # activation values for tested values
@@ -248,7 +252,7 @@ for i in range(0,10):
     P_0.weights = [training_weights_3[0],training_weights_3[1]]
     
     # tests the perceptron based off inputed values
-    SP(P_0, input_vector, iterations, eta, y)
+    SP(P_0, input_vector, iterations, eta, bias_update, y)
     
     # appends the activation value to a list
     activation_3.append(y[0])
