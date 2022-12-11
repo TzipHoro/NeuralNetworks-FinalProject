@@ -33,7 +33,7 @@ def SP(P_0, input_vector, iterations, eta, y):
     # perceptron training session
     for i in range(0,iterations):
         # calculates activity value
-        #P_0.calc_activity(input_vector)    # this is called within method call below
+        #P_0.calc_activity(input_vector)    # why is this called? this is called within method call below
         
         # calculates activation value
         P_0.calc_activation(input_vector)
@@ -64,7 +64,7 @@ def SP(P_0, input_vector, iterations, eta, y):
 t0 = time.time()
 
 # Online Training
-training_count = 1000000
+training_count = 30
 for i in range(0,training_count):
     # training data row holding variable
     hold = training_data.iloc[i % 10]
@@ -134,7 +134,7 @@ P_0 = Perceptron(weights, 0)
 t0 = time.time()
 
 # Online Training
-training_count = 1000
+training_count = 30
 for i in range(0,training_count):
     # training data row holding variable
     hold = training_data.iloc[i % 10]

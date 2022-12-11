@@ -14,7 +14,7 @@ import random
 np.set_printoptions(precision = 4, suppress = True)
 
 # import data
-data = pd.read_csv(r'data\train.csv') # data as a whole
+data = pd.read_csv(r'data/train.csv') # data as a whole
 training_data = data[0::2] # data selected for training
 testing_data = data[1::2] # data selected for testing
 
@@ -47,7 +47,7 @@ def FFBP(H_list, O_list, input_vector, iterations, eta):
         # FEEDFORWARD
         for j in range(0,(len(H_list))):
             # calculates activity value
-            H_list[j].calc_activity(input_vector)
+            #H_list[j].calc_activity(input_vector)    # why is this called? this is called within method call below
         
             # calculates activation value
             H_list[j].calc_activation(input_vector)
@@ -57,7 +57,7 @@ def FFBP(H_list, O_list, input_vector, iterations, eta):
             
         for k in range(0,(len(O_list))):
             # calculates activity value
-            O_list[k].calc_activity(y)
+            #O_list[k].calc_activity(y)    # why is this called? this is called within method call below
         
             # calculates activation value
             O_list[k].calc_activation(y)
@@ -66,7 +66,7 @@ def FFBP(H_list, O_list, input_vector, iterations, eta):
             z[k] = O_list[k].activation
             
             # prints the current iterate training session
-            print(z)
+            #print(z)
             
             # BACK PROPAGATION
             # calculates the delta value for the output layer
@@ -107,9 +107,10 @@ def FFBP(H_list, O_list, input_vector, iterations, eta):
 t0 = time.time()
 
 # Online Training
-for i in range(0,10):
+training_count = 30
+for i in range(0, training_count):
     # training data row holding variable 
-    hold = training_data.iloc[i]
+    hold = training_data.iloc[i % 10]
     
     # variable update
     d = hold[3] # desired output
@@ -120,23 +121,22 @@ for i in range(0,10):
     
 # end time
 t1 = time.time() - t0 # total time for training session
+t_avg = t1 / float(training_count)
 
 training_weights_1 = H_list[0].weights + H_list[1].weights + O_list[0].weights
 
 # testing cycle    
-d = data.TACA[0] # desired output
-input_vector = [data.LAC[0],data.SOW[0]] # input values
+# d = data.TACA[0] # desired output
+# input_vector = [data.LAC[0],data.SOW[0]] # input values
     
-FFBP(H_list, O_list, input_vector, iterations, eta)
+# FFBP(H_list, O_list, input_vector, iterations, eta)
 
 # prints total error for the training session
-E = ((0.5)*(d - z[0])**2)
+#E = ((0.5)*(d - z[0])**2)
 
-print("The time elapsed for training is", t1)
-print("The final weights for this training are", training_weights_1)
-print("The big E error for this training was", E)
 
 # activation value calculation
+total_error = 0
 activation_1 = [] # activation values for tested values
 for i in range(0,10):
     # testing data row holding variable
@@ -157,18 +157,22 @@ for i in range(0,10):
     # appends the activation value to a list
     activation_1.append(z[0])
 
+    total_error += ((0.5)*(d - z[0])**2)
+
+print("The time elapsed for training is", t1)
+print(f"The average training time per instance: {t_avg}")
+print("The final weights for this training are", training_weights_1)
+print("The total error for this training was", total_error)
+print("----")
+
+
 # SECOND TRAINING SESSION
 # variable initialization
 d = 0 # desired output
 input_vector = [0,0] # input values
 
 # random weight generation
-weights = [] # initial weights
-for i in range(6):
-    # generates a random variable 
-    hold = random.random()
-    # appends it to the list of weights
-    weights.append(hold)
+weights = np.random.uniform(size=6)
     
 iterations = 1 # number of training sessions
 bias_update = 1 # boolean value that specifies if bias added in activity calculation
@@ -192,9 +196,10 @@ delta_k = [0] * len(O_list) # preallocates space for delta_k values
 t0 = time.time()
 
 # Online Training
-for i in range(0,10):
+training_count = 30
+for i in range(0,training_count):
     # training data row holding variable 
-    hold = training_data.iloc[i]
+    hold = training_data.iloc[i % 10]
     
     # variable update
     d = hold[3] # desired output
@@ -205,23 +210,21 @@ for i in range(0,10):
     
 # end time
 t1 = time.time() - t0 # total time for training session
+t_avg = t1 / float(training_count)
 
 training_weights_2 = H_list[0].weights + H_list[1].weights + O_list[0].weights
 
 # testing cycle    
-d = data.TACA[0] # desired output
-input_vector = [data.LAC[0],data.SOW[0]] # input values
+# d = data.TACA[0] # desired output
+# input_vector = [data.LAC[0],data.SOW[0]] # input values
     
-FFBP(H_list, O_list, input_vector, iterations, eta)
+# FFBP(H_list, O_list, input_vector, iterations, eta)
 
-# prints total error for the training session
-E = ((0.5)*(d - z[0])**2)
-
-print("The time elapsed for training is", t1)
-print("The final weights for this training are", training_weights_2)
-print("The big E error for this training was", E)
+# # prints total error for the training session
+# E = ((0.5)*(d - z[0])**2)
 
 # activation value calculation
+total_error = 0
 activation_2 = [] # activation values for tested values
 for i in range(0,10):
     # testing data row holding variable
@@ -241,6 +244,14 @@ for i in range(0,10):
     
     # appends the activation value to a list
     activation_2.append(z[0])
+
+    total_error += ((0.5)*(d - z[0])**2)
+
+print("The time elapsed for training is", t1)
+print(f"The average training time per instance: {t_avg}")
+print("The final weights for this training are", training_weights_2)
+print("The total error for this training was", total_error)
+print('---')
 
 # THIRD TRAINING SESSION
 # variable initialization
@@ -281,9 +292,10 @@ delta_k = [0] * len(O_list) # preallocates space for delta_k values
 t0 = time.time()
 
 # Online Training
-for i in range(0,10):
+training_count = 30
+for i in range(0,training_count):
     # training data row holding variable 
-    hold = training_data.iloc[i]
+    hold = training_data.iloc[i % 10]
     
     # variable update
     d = hold[3] # desired output
@@ -294,23 +306,21 @@ for i in range(0,10):
     
 # end time
 t1 = time.time() - t0 # total time for training session
+t_avg = t1 / float(training_count)
 
 training_weights_3 = H_list[0].weights + H_list[1].weights + O_list[0].weights
 
 # testing cycle    
-d = data.TACA[0] # desired output
-input_vector = [data.LAC[0],data.SOW[0]] # input values
+# d = data.TACA[0] # desired output
+# input_vector = [data.LAC[0],data.SOW[0]] # input values
     
-FFBP(H_list, O_list, input_vector, iterations, eta)
+# FFBP(H_list, O_list, input_vector, iterations, eta)
 
-# prints total error for the training session
-E = ((0.5)*(d - z[0])**2)
-
-print("The time elapsed for training is", t1)
-print("The final weights for this training are", training_weights_3)
-print("The big E error for this training was", E)
+# # prints total error for the training session
+# E = ((0.5)*(d - z[0])**2)
 
 # activation value calculation
+total_error = 0
 activation_3 = [] # activation values for tested values
 for i in range(0,10):
     # testing data row holding variable
@@ -330,6 +340,14 @@ for i in range(0,10):
     
     # appends the activation value to a list
     activation_3.append(z[0])
+
+    total_error += ((0.5)*(d - z[0])**2)
+
+
+print("The time elapsed for training is", t1)
+print(f"The average training time per instance: {t_avg}")
+print("The final weights for this training are", training_weights_3)
+print("The total error for this training was", total_error)
 
 # TRAINING WEIGHTS AND ACTIVATION EXPORT
 # zips the training and testing files together before DataFrame creation
