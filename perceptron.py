@@ -39,10 +39,7 @@ class Perceptron:
         self._delta = value
         
     def calc_activity(self, input_vector: list):
-        activity = 0
-        # for loop to calculate activity based on input/weight pairs
-        for i in range(0, self.vector_length):
-            activity += input_vector[i] * self.weights[i]
+        activity = np.dot(np.array(input_vector), np.array(self.weights))
         if self.bias is not None:
             activity += self.bias
         self.activity = activity
@@ -52,16 +49,27 @@ class Perceptron:
         self.calc_activity(input_vector)
         self._activation = 1.0/(1.0 + np.exp(-1*self.activity))
     
-    
     def set_delta_weights(self, input_vector: list, eta: float):
-        """ """
+        """ 
+
+        PERFORMANCE NOTE: Could do vector addition here with numpy.
+        1) given minimal weights, performance speed up not observed
+        2) interestingly using numpy in this regard causes loss of
+        precision, apparently known issue (https://stackoverflow.com/questions/21165745/precision-loss-numpy-mpmath)
+        """
         input = input_vector
         # calcuates the change to the weights
         for i in range(0, self.vector_length):
             self.delta_weights[i] = input[i] * eta * self._delta
         
     def update_weights(self):
-        """ """
+        """
+
+        PERFORMANCE NOTE: Could do vector addition here with numpy.
+        1) given minimal weights, performance speed up not observed
+        2) interestingly using numpy in this regard causes loss of
+        precision, apparently known issue (https://stackoverflow.com/questions/21165745/precision-loss-numpy-mpmath)
+        """
         for i in range(0, self.vector_length):
             self.weights[i] += self.delta_weights[i]
             

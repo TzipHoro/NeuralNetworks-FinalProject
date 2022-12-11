@@ -10,11 +10,10 @@ from perceptron import Perceptron
 import pandas as pd
 import numpy as np
 import time
-import random
 np.set_printoptions(precision = 4, suppress = True)
 
 # import data
-data = pd.read_csv(r'data\train.csv') # data as a whole
+data = pd.read_csv(r'data/train.csv') # data as a whole
 training_data = data[0::2] # data selected for training
 testing_data = data[1::2] # data selected for testing
 
@@ -34,7 +33,7 @@ def SP(P_0, input_vector, iterations, eta, y):
     # perceptron training session
     for i in range(0,iterations):
         # calculates activity value
-        P_0.calc_activity(input_vector)
+        #P_0.calc_activity(input_vector)    # this is called within method call below
         
         # calculates activation value
         P_0.calc_activation(input_vector)
@@ -58,16 +57,17 @@ def SP(P_0, input_vector, iterations, eta, y):
         P_0.update_bias(eta)
         
         # prints the current iterate training session
-        print(y[0])
+        #print(y[0])
 
 # FIRST TRAINING SESSION
 # start time
 t0 = time.time()
 
 # Online Training
-for i in range(0,10):
-    # training data row holding variable 
-    hold = training_data.iloc[i]
+training_count = 1000
+for i in range(0,training_count):
+    # training data row holding variable
+    hold = training_data.iloc[i % 10]
     
     # variable update
     d = hold[3] # desired output
@@ -78,24 +78,22 @@ for i in range(0,10):
     
 # end time
 t1 = time.time() - t0 # total time for training session
+t_avg = t1 / float(training_count)
 
 training_weights_1 = weights
 
 # testing cycle    
-d = data.TACA[0] # desired output
-input_vector = [data.LAC[0],data.SOW[0]] # input values
+# d = data.TACA[0] # desired output
+# input_vector = [data.LAC[0],data.SOW[0]] # input values
     
-SP(P_0, input_vector, iterations, eta, y)
+# SP(P_0, input_vector, iterations, eta, y)
 
-# prints total error for the training session
-E = ((0.5)*(d - y[0])**2)
-
-print("The time elapsed for training is", t1)
-print("The final weights for this training are", training_weights_1)
-print("The big E error for this training was", E)
+# # prints total error for the training session
+# E = ((0.5)*(d - y[0])**2)
 
 # activation value calculation
 activation_1 = [] # activation values for tested values
+total_error = 0
 for i in range(0,10):
     # testing data row holding variable
     hold = testing_data.iloc[i]
@@ -113,18 +111,21 @@ for i in range(0,10):
     # appends the activation value to a list
     activation_1.append(y[0])
 
+    total_error += ((0.5)*(d - y[0])**2)
+
+print("The time elapsed for training is", t1)
+print(f"The average training time per instance: {t_avg}")
+print("The final weights for this training are", training_weights_1)
+print("Total error for this training was", total_error)
+print("----")
+
 # SECOND TRAINING SESSION
 # variable initialization
 d = 0 # desired output
 input_vector = [0,0] # input values
 
 # random weight generation
-weights = [] # initial weights
-for i in range(2):
-    # generates a random variable 
-    hold = random.random()
-    # appends it to the list of weights
-    weights.append(hold)
+weights = np.random.uniform(size=2)
 
 # single perceptron initialization
 P_0 = Perceptron(weights, 0)
@@ -133,9 +134,10 @@ P_0 = Perceptron(weights, 0)
 t0 = time.time()
 
 # Online Training
-for i in range(0,10):
-    # training data row holding variable 
-    hold = training_data.iloc[i]
+training_count = 1000
+for i in range(0,training_count):
+    # training data row holding variable
+    hold = training_data.iloc[i % 10]
     
     # variable update
     d = hold[3] # desired output
@@ -146,23 +148,21 @@ for i in range(0,10):
     
 # end time
 t1 = time.time() - t0 # total time for training session
+t_avg = t1 / float(training_count)
 
 training_weights_2 = weights
 
 # testing cycle    
-d = data.TACA[0] # desired output
-input_vector = [data.LAC[0],data.SOW[0]] # input values
+# d = data.TACA[0] # desired output
+# input_vector = [data.LAC[0],data.SOW[0]] # input values
     
-SP(P_0, input_vector, iterations, eta, y)
+# SP(P_0, input_vector, iterations, eta, y)
 
-# prints total error for the training session
-E = ((0.5)*(d - y[0])**2)
-
-print("The time elapsed for training is", t1)
-print("The final weights for this training are", training_weights_2)
-print("The big E error for this training was", E)
+# # prints total error for the training session
+# E = ((0.5)*(d - y[0])**2)
 
 # activation value calculation
+total_error = 0
 activation_2 = [] # activation values for tested values
 for i in range(0,10):
     # testing data row holding variable
@@ -181,6 +181,16 @@ for i in range(0,10):
     # appends the activation value to a list
     activation_2.append(y[0])
 
+    total_error += ((0.5)*(d - y[0])**2)
+
+
+print("The total time elapsed for training is", t1)
+print(f"The average training time per instance: {t_avg}")
+print("The final weights for this training are", training_weights_2)
+print("The total error for this training was", total_error)
+print('-----')
+
+
 # THIRD TRAINING SESSION
 # variable initialization
 d = 0 # desired output
@@ -190,7 +200,7 @@ input_vector = [0,0] # input values
 weights = [] # initial weights
 for i in range(2):
     # generates a random variable 
-    hold = random.random()
+    hold = np.random.uniform()
     
     # adds a random amount of each training weights
     combined_hold = (training_weights_1[i] * hold) + (training_weights_2[i] * (1 - hold))
@@ -205,9 +215,10 @@ P_0 = Perceptron(weights, 0)
 t0 = time.time()
 
 # Online Training
-for i in range(0,10):
+training_count = 30
+for i in range(0,training_count):
     # training data row holding variable 
-    hold = training_data.iloc[i]
+    hold = training_data.iloc[i % 10]
     
     # variable update
     d = hold[3] # desired output
@@ -218,23 +229,21 @@ for i in range(0,10):
     
 # end time
 t1 = time.time() - t0 # total time for training session
+t_avg = t1 / float(training_count)
 
 training_weights_3 = weights
 
 # testing cycle    
-d = data.TACA[0] # desired output
-input_vector = [data.LAC[0],data.SOW[0]] # input values
+# d = data.TACA[0] # desired output
+# input_vector = [data.LAC[0],data.SOW[0]] # input values
     
-SP(P_0, input_vector, iterations, eta, y)
+# SP(P_0, input_vector, iterations, eta, y)
 
-# prints total error for the training session
-E = ((0.5)*(d - y[0])**2)
-
-print("The time elapsed for training is", t1)
-print("The final weights for this training are", training_weights_3)
-print("The big E error for this training was", E)
+# # prints total error for the training session
+# E = ((0.5)*(d - y[0])**2)
 
 # activation value calculation
+total_error = 0
 activation_3 = [] # activation values for tested values
 for i in range(0,10):
     # testing data row holding variable
@@ -252,6 +261,14 @@ for i in range(0,10):
     
     # appends the activation value to a list
     activation_3.append(y[0])
+
+    total_error += ((0.5)*(d - y[0])**2)
+
+print("The time elapsed for training is", t1)
+print(f"The average training time per instance: {t_avg}")
+print("The final weights for this training are", training_weights_3)
+print("The total error for this training was", total_error)
+
 
 # TRAINING WEIGHTS AND ACTIVATION EXPORT
 # zips the training and testing files together before DataFrame creation
