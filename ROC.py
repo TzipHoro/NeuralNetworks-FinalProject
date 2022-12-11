@@ -94,6 +94,26 @@ class ROCMetrics:
         if path is not None:
             plt.savefig(path)
 
+    @staticmethod
+    def metrics_plot(threshold_matrix: pd.DataFrame, path: str = None, xlim: tuple = None):
+        plt.clf()
+
+        threshold_matrix.loc['sensitivity', :].plot(legend=True)
+        threshold_matrix.loc['specificity', :].plot(legend=True)
+        threshold_matrix.loc['precision', :].plot(legend=True)
+        threshold_matrix.loc['accuracy', :].plot(legend=True)
+        threshold_matrix.loc['f1_score', :].plot(legend=True)
+
+        plt.title('ROC Metrics')
+        plt.xlabel('Threshold')
+        plt.ylabel('Score')
+        if xlim is not None:
+            plt.xlim(xlim)
+        plt.plot()
+
+        if path is not None:
+            plt.savefig(path)
+
 
 def main(output_data_path: str, plot_path: str = None):
     df = pd.read_csv(r'data/train.csv', index_col='DataItem')
@@ -106,19 +126,22 @@ def main(output_data_path: str, plot_path: str = None):
     thresholds = roc.threshold_matrix(step_size=0.0001)
     p_th = thresholds.loc[['sensitivity', 'specificity', 'precision', 'accuracy', 'f1_score'], :].sum().idxmax()
 
+    path = plot_path.rsplit('.')
+    roc.metrics_plot(thresholds, path=path[0] + '-metrics.' + path[1], xlim=(0.6, 1))
+
     roc.roc_plot(plot_path)
 
-    return p_th, (yhat >= p_th).astype(int)
+    return thresholds.loc[:, p_th]
 
 
 if __name__ == '__main__':
     # multi-layer perceptron
-    p_th_1 = main(r'data/multilayer_data/testing_activation_1.csv', r'plots/roc-mlp-1.png')
+    # p_th_1 = main(r'data/multilayer_data/testing_activation_1.csv', r'plots/roc-mlp-1.png')
     p_th_2 = main(r'data/multilayer_data/testing_activation_2.csv', r'plots/roc-mlp-2.png')
-    p_th_3 = main(r'data/multilayer_data/testing_activation_3.csv', r'plots/roc-mlp-3.png')
-    print('threshold 1:', p_th_1, '\nthreshold 2:', p_th_2, '\nthreshold 3:', p_th_3)
+    # p_th_3 = main(r'data/multilayer_data/testing_activation_3.csv', r'plots/roc-mlp-3.png')
+    # print('threshold 1:', p_th_1, '\nthreshold 2:', p_th_2, '\nthreshold 3:', p_th_3)
 
     # single-layer perceptron
-    p_th_1 = main(r'data/single_data/testing_activation_1.csv', r'plots/roc-slp-1.png')
+    # p_th_1 = main(r'data/single_data/testing_activation_1.csv', r'plots/roc-slp-1.png')
     p_th_2 = main(r'data/single_data/testing_activation_2.csv', r'plots/roc-slp-2.png')
-    print('\nthreshold 1:', p_th_1, '\nthreshold 2:', p_th_2)
+    # print('\nthreshold 1:', p_th_1, '\nthreshold 2:', p_th_2)
