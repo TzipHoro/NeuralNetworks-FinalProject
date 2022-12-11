@@ -57,6 +57,18 @@ class ROCMetrics:
 
         return prec
 
+    @staticmethod
+    def fall_out(conf_matrix: np.array) -> float:
+        tn = conf_matrix[0][0]
+        fp = conf_matrix[0][1]
+
+        with np.errstate(divide='ignore', invalid='ignore'):
+            fo = np.true_divide(fp, tn + fp)
+            if fo == np.inf:
+                fo = 0
+
+        return fo
+
     def accuracy(self, y_pred: pd.Series) -> float:
         return accuracy_score(self.y_true, y_pred)
 
@@ -75,21 +87,27 @@ class ROCMetrics:
             sens = self.sensitivity(conf)
             spec = self.specificity(conf)
             prec = self.precision(conf)
+            fo = self.fall_out(conf)
             accr = self.accuracy(y_pred)
             f1 = self.f1_score(y_pred)
 
             y_pred = y_pred.append(pd.Series({'sensitivity': sens, 'specificity': spec, 'precision': prec,
-                                              'accuracy': accr, 'f1_score': f1}))
+                                              'fall_out': fo, 'accuracy': accr, 'f1_score': f1}))
             matrix[i] = y_pred
 
         return matrix
 
-    def roc_plot(self, path: str = None):
-        fpr, tpr, thresh = roc_curve(self.y_true, self.p_pred)
+    def roc_plot(self, threshold_matrix: pd.DataFrame,  path: str = None):
+        plt.clf()
+
+        fpr = threshold_matrix.loc['fall_out', :]
+        tpr = threshold_matrix.loc['sensitivity', :]
         roc_auc = auc(fpr, tpr)
 
         display = RocCurveDisplay(fpr=fpr, tpr=tpr, roc_auc=roc_auc, estimator_name=self.y_true.name)
         display.plot()
+
+        plt.title('ROC Curve')
 
         if path is not None:
             plt.savefig(path)
@@ -129,7 +147,7 @@ def main(output_data_path: str, plot_path: str = None):
     path = plot_path.rsplit('.')
     roc.metrics_plot(thresholds, path=path[0] + '-metrics.' + path[1], xlim=(0.6, 1))
 
-    roc.roc_plot(plot_path)
+    roc.roc_plot(thresholds, plot_path)
 
     return thresholds.loc[:, p_th]
 
