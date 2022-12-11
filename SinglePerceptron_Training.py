@@ -64,7 +64,7 @@ def SP(P_0, input_vector, iterations, eta, y):
 t0 = time.time()
 
 # Online Training
-training_count = 1000
+training_count = 1000000
 for i in range(0,training_count):
     # training data row holding variable
     hold = training_data.iloc[i % 10]

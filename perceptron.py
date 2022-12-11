@@ -39,7 +39,10 @@ class Perceptron:
         self._delta = value
         
     def calc_activity(self, input_vector: list):
-        activity = np.dot(np.array(input_vector), np.array(self.weights))
+        #activity = np.dot(np.array(input_vector), np.array(self.weights))   # when tested, this was actually slower performance
+        activity = 0
+        for i in range(0, self.vector_length):
+            activity += input_vector[i] * self.weights[i]
         if self.bias is not None:
             activity += self.bias
         self.activity = activity
@@ -58,7 +61,7 @@ class Perceptron:
         precision, apparently known issue (https://stackoverflow.com/questions/21165745/precision-loss-numpy-mpmath)
         """
         input = input_vector
-        # calcuates the change to the weights
+        # calculates the change to the weights
         for i in range(0, self.vector_length):
             self.delta_weights[i] = input[i] * eta * self._delta
         
