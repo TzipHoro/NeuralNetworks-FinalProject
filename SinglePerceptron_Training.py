@@ -33,8 +33,6 @@ y = [0] # variable to hold output
 def SP(P_0, input_vector, iterations, eta, y):
     # perceptron training session
     for i in range(0,iterations):
-        # calculates activity value
-        P_0.calc_activity(input_vector)
         
         # calculates activation value
         P_0.calc_activation(input_vector)
@@ -64,6 +62,7 @@ def SP(P_0, input_vector, iterations, eta, y):
 # start time
 t0 = time.time()
 
+E = [] # initial error
 # Online Training
 for i in range(0,10):
     # training data row holding variable 
@@ -76,6 +75,9 @@ for i in range(0,10):
     # trains the perceptron based off inputed values
     SP(P_0, input_vector, iterations, eta, y)
     
+    # stores error values
+    E.append(((0.5)*(d - y[0])**2))
+    
 # end time
 t1 = time.time() - t0 # total time for training session
 
@@ -87,12 +89,9 @@ input_vector = [data.LAC[0],data.SOW[0]] # input values
     
 SP(P_0, input_vector, iterations, eta, y)
 
-# prints total error for the training session
-E = ((0.5)*(d - y[0])**2)
-
 print("The time elapsed for training is", t1)
 print("The final weights for this training are", training_weights_1)
-print("The big E error for this training was", E)
+print("The big E error for this training was", sum(E))
 
 # activation value calculation
 activation_1 = [] # activation values for tested values
@@ -132,6 +131,7 @@ P_0 = Perceptron(weights, 0)
 # start time
 t0 = time.time()
 
+E = [] # initial error
 # Online Training
 for i in range(0,10):
     # training data row holding variable 
@@ -144,6 +144,9 @@ for i in range(0,10):
     # trains the perceptron based off inputed values
     SP(P_0, input_vector, iterations, eta, y)
     
+    # stores error values
+    E.append(((0.5)*(d - y[0])**2))
+    
 # end time
 t1 = time.time() - t0 # total time for training session
 
@@ -155,12 +158,9 @@ input_vector = [data.LAC[0],data.SOW[0]] # input values
     
 SP(P_0, input_vector, iterations, eta, y)
 
-# prints total error for the training session
-E = ((0.5)*(d - y[0])**2)
-
 print("The time elapsed for training is", t1)
 print("The final weights for this training are", training_weights_2)
-print("The big E error for this training was", E)
+print("The big E error for this training was", sum(E))
 
 # activation value calculation
 activation_2 = [] # activation values for tested values
@@ -204,6 +204,7 @@ P_0 = Perceptron(weights, 0)
 # start time
 t0 = time.time()
 
+E = [] # initial error
 # Online Training
 for i in range(0,10):
     # training data row holding variable 
@@ -216,6 +217,9 @@ for i in range(0,10):
     # trains the perceptron based off inputed values
     SP(P_0, input_vector, iterations, eta, y)
     
+    # stores error values
+    E.append(((0.5)*(d - y[0])**2))
+    
 # end time
 t1 = time.time() - t0 # total time for training session
 
@@ -227,12 +231,9 @@ input_vector = [data.LAC[0],data.SOW[0]] # input values
     
 SP(P_0, input_vector, iterations, eta, y)
 
-# prints total error for the training session
-E = ((0.5)*(d - y[0])**2)
-
 print("The time elapsed for training is", t1)
 print("The final weights for this training are", training_weights_3)
-print("The big E error for this training was", E)
+print("The big E error for this training was", sum(E))
 
 # activation value calculation
 activation_3 = [] # activation values for tested values

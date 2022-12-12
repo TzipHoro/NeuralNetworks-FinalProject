@@ -1,3 +1,1 @@
-1: 3rd training weights had lowest E with 0.038
-2: 3rd training weights had lowest E with 0.035, but 2nd was at 0.037
-3: 2nd training weights had lowest E with 0.027, but 3rd was at 0.035
+2nd training weights had lowest E with 1.27
