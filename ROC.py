@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, roc_curve, auc, RocCurveDisplay, confusion_matrix, f1_score
+import time
 
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -80,8 +81,9 @@ class ROCMetrics:
             raise ValueError('step_size must be a valid probability')
         cols = np.arange(0, 1, step_size)
         matrix = pd.DataFrame()
-
+        run_times = []
         for i in cols:
+            start = time.time()
             y_pred = self.p_pred >= i
             conf = self.conf_matrix(y_pred)
             sens = self.sensitivity(conf)
@@ -94,7 +96,8 @@ class ROCMetrics:
             y_pred = y_pred.append(pd.Series({'sensitivity': sens, 'specificity': spec, 'precision': prec,
                                               'fall_out': fo, 'accuracy': accr, 'f1_score': f1}))
             matrix[i] = y_pred
-
+            run_times.append((time.time() - start))
+        print(f"Average Iteration time (secs): {sum(run_times)/len(cols)}" )
         return matrix
 
     def roc_plot(self, threshold_matrix: pd.DataFrame,  path: str = None):
@@ -141,7 +144,10 @@ def main(output_data_path: str, plot_path: str = None):
     yhat = df_output.loc[:, 'Testing Set 3']
 
     roc = ROCMetrics(y_test, yhat)
+    start = time.time()
     thresholds = roc.threshold_matrix(step_size=0.0001)
+    run_time = time.time() - start
+    print(f"{output_data_path} - ROC computation time: {run_time} secs")
     p_th = thresholds.loc[['sensitivity', 'specificity', 'precision', 'accuracy', 'f1_score'], :].sum().idxmax()
 
     path = plot_path.rsplit('.')

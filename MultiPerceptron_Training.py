@@ -15,7 +15,7 @@ import random
 np.set_printoptions(precision=4, suppress=True)
 
 # import data
-data = pd.read_csv(r'data\train.csv')  # data as a whole
+data = pd.read_csv(r'data/train.csv')  # data as a whole
 training_data = data[0::2]  # data selected for training
 testing_data = data[1::2]  # data selected for testing
 
@@ -68,7 +68,7 @@ def FFBP(H_list, O_list, input_vector, iterations, eta):
             z[k] = O_list[k].activation
 
             # prints the current iterate training session
-            print(z)
+            #print(z)
 
             # BACK PROPAGATION
             # calculates the delta value for the output layer
@@ -111,9 +111,9 @@ t0 = time.time()
 
 E = []  # initial error
 # Online Training
-for i in range(0, 10):
+for i in range(0, 30):
     # training data row holding variable 
-    hold = training_data.iloc[i]
+    hold = training_data.iloc[i % 10]
 
     # variable update
     d = hold[3]  # desired output
@@ -197,9 +197,9 @@ t0 = time.time()
 
 E = []  # initial error
 # Online Training
-for i in range(0, 10):
+for i in range(0, 30):
     # training data row holding variable 
-    hold = training_data.iloc[i]
+    hold = training_data.iloc[i % 10]
 
     # variable update
     d = hold[3]  # desired output
@@ -287,9 +287,9 @@ t0 = time.time()
 
 E = []  # initial error
 # Online Training
-for i in range(0, 10):
+for i in range(0, 30):
     # training data row holding variable 
-    hold = training_data.iloc[i]
+    hold = training_data.iloc[i % 10]
 
     # variable update
     d = hold[3]  # desired output

@@ -14,7 +14,7 @@ import random
 np.set_printoptions(precision = 4, suppress = True)
 
 # import data
-data = pd.read_csv(r'data\train.csv') # data as a whole
+data = pd.read_csv(r'data/train.csv') # data as a whole
 training_data = data[0::2] # data selected for training
 testing_data = data[1::2] # data selected for testing
 
@@ -56,7 +56,7 @@ def SP(P_0, input_vector, iterations, eta, y):
         P_0.update_bias(eta)
         
         # prints the current iterate training session
-        print(y[0])
+        #print(y[0])
 
 # FIRST TRAINING SESSION
 # start time
@@ -64,9 +64,9 @@ t0 = time.time()
 
 E = [] # initial error
 # Online Training
-for i in range(0,10):
+for i in range(0,30):
     # training data row holding variable 
-    hold = training_data.iloc[i]
+    hold = training_data.iloc[i % 10]
     
     # variable update
     d = hold[3] # desired output
@@ -92,6 +92,7 @@ SP(P_0, input_vector, iterations, eta, y)
 print("The time elapsed for training is", t1)
 print("The final weights for this training are", training_weights_1)
 print("The big E error for this training was", sum(E))
+print("---")
 
 # activation value calculation
 activation_1 = [] # activation values for tested values
@@ -133,9 +134,9 @@ t0 = time.time()
 
 E = [] # initial error
 # Online Training
-for i in range(0,10):
+for i in range(0,30):
     # training data row holding variable 
-    hold = training_data.iloc[i]
+    hold = training_data.iloc[i % 10]
     
     # variable update
     d = hold[3] # desired output
@@ -161,6 +162,7 @@ SP(P_0, input_vector, iterations, eta, y)
 print("The time elapsed for training is", t1)
 print("The final weights for this training are", training_weights_2)
 print("The big E error for this training was", sum(E))
+print("---")
 
 # activation value calculation
 activation_2 = [] # activation values for tested values
@@ -206,9 +208,9 @@ t0 = time.time()
 
 E = [] # initial error
 # Online Training
-for i in range(0,10):
+for i in range(0,30):
     # training data row holding variable 
-    hold = training_data.iloc[i]
+    hold = training_data.iloc[i % 10]
     
     # variable update
     d = hold[3] # desired output
